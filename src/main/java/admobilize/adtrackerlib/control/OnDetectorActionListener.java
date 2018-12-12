@@ -28,6 +28,8 @@ public interface OnDetectorActionListener {
 
     void onUpdateOrientation(String orientation);
 
-    void onGetDetectorId(String detectorId);
+    void onDetectorId(String detectorId);
+
+    void onDetectorData(String data);
 
 }

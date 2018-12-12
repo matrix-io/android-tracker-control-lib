@@ -6,7 +6,8 @@ package admobilize.adtrackerlib.control;
 
 class BroadcastKeys {
 
-    public static final String DETECTOR_ID = "key_adm_detector_id";
+
+    public static final String KEY_DETECTOR_ID   = "key_adm_detector_id";
     public static final String CAMERA_NAME = "key_camera_name";
     public static final String CAMERA_URL = "key_camera_url";
     public static final String CAMERA_ENABLE = "key_camera_enable";

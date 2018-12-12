@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Created by Antonio Vanegas @hpsaturn on 11/10/17.
@@ -13,10 +15,10 @@ public class ConfigManager {
 
     private static final String TAG = ConfigManager.class.getSimpleName();
 
-    public static final  String action_detector_webhook = "admobilize.broadcast.data";
+    public static final String action_detector_webhook = "admobilize.broadcast.data";
 
-    private static final String action_get_detector_id  = "ACTION_GET_ADMOBILIZE_DETECTOR_ID";
-    private static final String action_on_detector_id   = "ACTION_ON_ADMOBILIZE_DETECTOR_ID";
+    private static final String action_get_detector_id = "ACTION_GET_ADMOBILIZE_DETECTOR_ID";
+    private static final String action_on_detector_id = "ACTION_ON_ADMOBILIZE_DETECTOR_ID";
 
 
     private final Context ctx;
@@ -35,23 +37,30 @@ public class ConfigManager {
     private String action_orientation_status;
 
     public ConfigManager(Context ctx, OnDetectorActionListener listener) {
-        this.ctx=ctx;
-        this.eventListener=listener;
+        this.ctx = ctx;
+        this.eventListener = listener;
+        registerReceiver("");
+        getDetectorId();
+    }
+
+    public void getDetectorId() {
+        Intent intent = new Intent(action_get_detector_id);
+        ctx.sendBroadcast(intent);
     }
 
     private void registerReceiver(String detectorId) {
 
-        action_name = "ACTION"+detectorId+"NAME";
-        action_url = "ACTION"+detectorId+"URL";
-        action_enable = "ACTION"+detectorId+"ENABLE";
-        action_start =  "ACTION"+detectorId+"SERVICE_START";
-        action_stop = "ACTION"+detectorId+"SERVICE_STOP";
-        action_request_config_details = "ACTION"+detectorId+"REQUEST_DETAILS";
-        action_update_config_details = "ACTION"+detectorId+"CONFIG_DETAILS";
-        action_request_preview = "ACTION"+detectorId+"REQUEST_PREVIEW";
-        action_update_preview = "ACTION"+detectorId+"UPDATE_PREVIEW";
-        action_orientation = "ACTION"+detectorId+"ORIENTATION";
-        action_orientation_status = "ACTION"+detectorId+"ORIENTATION_STATUS";
+        action_name = "ACTION" + detectorId + "NAME";
+        action_url = "ACTION" + detectorId + "URL";
+        action_enable = "ACTION" + detectorId + "ENABLE";
+        action_start = "ACTION" + detectorId + "SERVICE_START";
+        action_stop = "ACTION" + detectorId + "SERVICE_STOP";
+        action_request_config_details = "ACTION" + detectorId + "REQUEST_DETAILS";
+        action_update_config_details = "ACTION" + detectorId + "CONFIG_DETAILS";
+        action_request_preview = "ACTION" + detectorId + "REQUEST_PREVIEW";
+        action_update_preview = "ACTION" + detectorId + "UPDATE_PREVIEW";
+        action_orientation = "ACTION" + detectorId + "ORIENTATION";
+        action_orientation_status = "ACTION" + detectorId + "ORIENTATION_STATUS";
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(action_name);
@@ -68,7 +77,7 @@ public class ConfigManager {
         intentFilter.addAction(action_get_detector_id);
         intentFilter.addAction(action_on_detector_id);
 
-        ctx.registerReceiver(mReceiver,intentFilter);
+        ctx.registerReceiver(mReceiver, intentFilter);
 
     }
 
@@ -122,7 +131,7 @@ public class ConfigManager {
         ctx.sendBroadcast(intent);
     }
 
-    public void updateCameraPreview(byte [] preview) {
+    public void updateCameraPreview(byte[] preview) {
         Intent intent = new Intent(action_update_preview);
         intent.putExtra(BroadcastKeys.CAMERA_PREVIEW, preview);
         ctx.sendBroadcast(intent);
@@ -146,42 +155,42 @@ public class ConfigManager {
 
             String action = intent.getAction();
 
-            if(action.equals(action_name)) {
+            if (action.equals(action_name)) {
 
-                eventListener.onChangeName(intent.getExtras().getString(BroadcastKeys.CAMERA_NAME));
+                eventListener.onChangeName(
+                        intent.getExtras().getString(BroadcastKeys.CAMERA_NAME)
+                );
 
-            }
-            else if(action.equals(action_url)) {
+            } else if (action.equals(action_url)) {
 
-                eventListener.onChangeUrl(intent.getExtras().getString(BroadcastKeys.CAMERA_URL));
+                eventListener.onChangeUrl(
+                        intent.getExtras().getString(BroadcastKeys.CAMERA_URL)
+                );
 
-            }
-            else if(action.equals(action_enable)) {
+            } else if (action.equals(action_enable)) {
 
-                eventListener.onServiceEnable(intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ENABLE));
+                eventListener.onServiceEnable(
+                        intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ENABLE)
+                );
 
-            }
-            else if(action.equals(action_start)) {
+            } else if (action.equals(action_start)) {
 
                 eventListener.onServiceStart();
 
-            }
-            else if(action.equals(action_stop)) {
+            } else if (action.equals(action_stop)) {
 
                 String msg = intent.getExtras().getString(BroadcastKeys.SERVICE_MSG);
                 eventListener.onServiceStop(msg);
 
-            }
-            else if(action.equals(action_request_config_details)) {
+            } else if (action.equals(action_request_config_details)) {
 
                 eventListener.onRequestConfigDetails();
 
-            }
-            else if(action.equals(action_update_config_details)) {
+            } else if (action.equals(action_update_config_details)) {
 
                 String name = intent.getExtras().getString(BroadcastKeys.CAMERA_NAME);
-                String url  = intent.getExtras().getString(BroadcastKeys.CAMERA_URL);
-                String orientation  = intent.getExtras().getString(BroadcastKeys.CAMERA_ORIENTATION);
+                String url = intent.getExtras().getString(BroadcastKeys.CAMERA_URL);
+                String orientation = intent.getExtras().getString(BroadcastKeys.CAMERA_ORIENTATION);
                 boolean isOrientationChangeAllowed = intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ORIENTATION_ALLOWED);
                 boolean enable = intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ENABLE);
                 ConfigParameters params = new ConfigParameters(name, url);
@@ -190,32 +199,44 @@ public class ConfigManager {
                 params.isDetectionRunning = enable;
                 eventListener.onUpdateConfigDetails(params);
 
-            }
-            else if(action.equals(action_request_preview)) {
+            } else if (action.equals(action_request_preview)) {
 
                 eventListener.onRequestPreview();
 
-            }
-            else if(action.equals(action_update_preview)) {
+            } else if (action.equals(action_update_preview)) {
 
                 byte[] preview = intent.getExtras().getByteArray(BroadcastKeys.CAMERA_PREVIEW);
                 eventListener.onUpdatePreview(preview);
 
-            }
-            else if(action.equals(action_orientation_status)){
+            } else if (action.equals(action_orientation_status)) {
 
                 boolean isOrientationAllowed = intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ORIENTATION_ALLOWED);
                 eventListener.onUpdateOrientationAllowed(isOrientationAllowed);
 
-            }
-            else if(action.equals(action_orientation)){
+            } else if (action.equals(action_orientation)) {
 
                 String orientation = intent.getExtras().getString(BroadcastKeys.CAMERA_ORIENTATION);
                 eventListener.onUpdateOrientation(orientation);
 
+            } else if (action.equals(action_on_detector_id)) {
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    String detectorId = extras.getString(BroadcastKeys.KEY_DETECTOR_ID);
+                    Log.d(TAG, "new detectorId: " + detectorId);
+                    registerReceiver(detectorId);
+                    eventListener.onDetectorId(detectorId);
+                }
+
+            } else if (action.equals(action_detector_webhook)) {
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    String data = extras.getString("webhook");
+                    if(data!=null){
+                        Log.d(TAG, "onDetectorData: " + data);
+                        eventListener.onDetectorData(data);
+                    }
+                }
             }
-
-
         }
     };
 
