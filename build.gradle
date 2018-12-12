@@ -46,7 +46,7 @@ dependencies {
 }
 
 ext {
-    bintrayRepo = 'maven'
+    bintrayRepo = 'AdmobilizeAndroidMaven'
     bintrayName = 'admobilize.adtrackerlib.control'
 
     publishedGroupId = 'admobilize'
