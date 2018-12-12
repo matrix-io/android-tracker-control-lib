@@ -4,7 +4,7 @@ package admobilize.adtrackerlib.control;
  * Created by Antonio Vanegas @hpsaturn on 11/10/17.
  */
 
-public interface OnConfigEventListener {
+public interface OnDetectorActionListener {
 
     void onChangeName(String name);
 

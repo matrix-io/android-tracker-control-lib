@@ -13,9 +13,14 @@ public class ConfigManager {
 
     private static final String TAG = ConfigManager.class.getSimpleName();
 
-    private final String detectorId;
+    public static final  String action_detector_webhook = "admobilize.broadcast.data";
+
+    private static final String action_get_detector_id  = "ACTION_GET_ADMOBILIZE_DETECTOR_ID";
+    private static final String action_on_detector_id   = "ACTION_ON_ADMOBILIZE_DETECTOR_ID";
+
+
     private final Context ctx;
-    private final OnConfigEventListener eventListener;
+    private final OnDetectorActionListener eventListener;
 
     private String action_name;
     private String action_url;
@@ -28,17 +33,13 @@ public class ConfigManager {
     private String action_request_config_details;
     private String action_orientation;
     private String action_orientation_status;
-    private String action_get_detector_id;
-    private String action_on_detector_id;
 
-    public ConfigManager(String detectorId, Context ctx, OnConfigEventListener listener) {
-        this.detectorId=detectorId;
+    public ConfigManager(Context ctx, OnDetectorActionListener listener) {
         this.ctx=ctx;
         this.eventListener=listener;
-        registerReceiver();
     }
 
-    private void registerReceiver() {
+    private void registerReceiver(String detectorId) {
 
         action_name = "ACTION"+detectorId+"NAME";
         action_url = "ACTION"+detectorId+"URL";
@@ -51,8 +52,6 @@ public class ConfigManager {
         action_update_preview = "ACTION"+detectorId+"UPDATE_PREVIEW";
         action_orientation = "ACTION"+detectorId+"ORIENTATION";
         action_orientation_status = "ACTION"+detectorId+"ORIENTATION_STATUS";
-        action_get_detector_id = "ACTION_GET_ADMOBILIZE_DETECTOR_ID";
-        action_on_detector_id = "ACTION_ON_ADMOBILIZE_DETECTOR_ID";
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(action_name);
@@ -215,15 +214,7 @@ public class ConfigManager {
                 eventListener.onUpdateOrientation(orientation);
 
             }
-            else if(action.equals(action_get_detector_id)){
 
-                // for external apps
-                eventListener.onGetDetectorId(detectorId);
-                Intent intentCallback = new Intent(action_on_detector_id);
-                intentCallback.putExtra(BroadcastKeys.DETECTOR_ID, detectorId);
-                ctx.sendBroadcast(intentCallback);
-
-            }
 
         }
     };
@@ -232,7 +223,4 @@ public class ConfigManager {
         ctx.unregisterReceiver(mReceiver);
     }
 
-    public String getDetectorId() {
-        return detectorId;
-    }
 }
