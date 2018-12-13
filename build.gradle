@@ -47,18 +47,18 @@ dependencies {
 
 ext {
     bintrayRepo = 'AdmobilizeAndroidMaven'
-    bintrayName = 'admobilize.adtrackerlib.control'
+    bintrayName = 'libadtrackercontrol'
 
-    publishedGroupId = 'admobilize'
-    libraryName = 'AdTrackerLib'
-    artifact = 'adtrackerlib.control'
+    publishedGroupId = 'admobilize.adtrackerlib.control'
+    libraryName = 'AdTracker Control Library'
+    artifact = 'libadtrackercontrol'
 
     libraryDescription = 'Admobilize Android Tracker App Control'
 
     siteUrl = 'https://github.com/matrix-io/android-tracker-control-lib'
     gitUrl = 'https://github.com/matrix-io/android-tracker-control-lib.git'
 
-    libraryVersion = '0.1.0'
+    libraryVersion = '0.1.1'
 
     developerId = 'hpsaturn'
     developerName = '@hpsaturn'
@@ -69,83 +69,4 @@ ext {
     allLicenses = ["GLP-3.0"]
 }
 
-group = publishedGroupId
-version = libraryVersion
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            packaging 'aar'
-            groupId publishedGroupId
-            artifactId artifact
-
-            name libraryName
-            description libraryDescription
-            url siteUrl
-
-            licenses {
-                license {
-                    name licenseName
-                    url licenseUrl
-                }
-            }
-            developers {
-                developer {
-                    id developerId
-                    name developerName
-                    email developerEmail
-                }
-            }
-            scm {
-                connection gitUrl
-                developerConnection gitUrl
-                url siteUrl
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-
-    configurations = ['archives']
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        dryRun = false
-        publish = true
-        override = false
-        publicDownloadNumbers = true
-        version {
-            desc = libraryDescription
-        }
-    }
-}
+apply from: 'https://raw.githubusercontent.com/LissF/JCenter/master/script.gradle'
