@@ -16,14 +16,6 @@ public interface OnDetectorActionListener {
 
     void onServiceStop(String msg);
 
-    void onRequestConfigDetails();
-
-    void onUpdateConfigDetails(ConfigParameters params);
-
-    void onRequestPreview();
-
-    void onUpdatePreview(byte[] preview);
-
     void onUpdateOrientationAllowed(boolean isOrientationAllowed);
 
     void onUpdateOrientation(String orientation);

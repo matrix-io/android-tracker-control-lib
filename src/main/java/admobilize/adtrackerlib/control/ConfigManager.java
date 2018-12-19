@@ -29,10 +29,6 @@ public class ConfigManager {
     private String action_enable;
     private String action_start;
     private String action_stop;
-    private String action_update_config_details;
-    private String action_request_preview;
-    private String action_update_preview;
-    private String action_request_config_details;
     private String action_orientation;
     private String action_orientation_status;
 
@@ -55,10 +51,6 @@ public class ConfigManager {
         action_enable = "ACTION" + detectorId + "ENABLE";
         action_start = "ACTION" + detectorId + "SERVICE_START";
         action_stop = "ACTION" + detectorId + "SERVICE_STOP";
-        action_request_config_details = "ACTION" + detectorId + "REQUEST_DETAILS";
-        action_update_config_details = "ACTION" + detectorId + "CONFIG_DETAILS";
-        action_request_preview = "ACTION" + detectorId + "REQUEST_PREVIEW";
-        action_update_preview = "ACTION" + detectorId + "UPDATE_PREVIEW";
         action_orientation = "ACTION" + detectorId + "ORIENTATION";
         action_orientation_status = "ACTION" + detectorId + "ORIENTATION_STATUS";
 
@@ -68,10 +60,6 @@ public class ConfigManager {
         intentFilter.addAction(action_enable);
         intentFilter.addAction(action_start);
         intentFilter.addAction(action_stop);
-        intentFilter.addAction(action_request_config_details);
-        intentFilter.addAction(action_update_config_details);
-        intentFilter.addAction(action_request_preview);
-        intentFilter.addAction(action_update_preview);
         intentFilter.addAction(action_orientation);
         intentFilter.addAction(action_orientation_status);
         intentFilter.addAction(action_get_detector_id);
@@ -111,32 +99,6 @@ public class ConfigManager {
         ctx.sendBroadcast(intent);
     }
 
-    public void requestConfigDetails() {
-        Intent intent = new Intent(action_request_config_details);
-        ctx.sendBroadcast(intent);
-    }
-
-    public void updateConfigDetails(ConfigParameters params) {
-        Intent intent = new Intent(action_update_config_details);
-        intent.putExtra(BroadcastKeys.CAMERA_NAME, params.name);
-        intent.putExtra(BroadcastKeys.CAMERA_URL, params.url);
-        intent.putExtra(BroadcastKeys.CAMERA_ORIENTATION, params.orientation);
-        intent.putExtra(BroadcastKeys.CAMERA_ORIENTATION_ALLOWED, params.isOrientationChangeAllowed);
-        intent.putExtra(BroadcastKeys.CAMERA_ENABLE, params.isDetectionRunning);
-        ctx.sendBroadcast(intent);
-    }
-
-    public void requestCameraPreview() {
-        Intent intent = new Intent(action_request_preview);
-        ctx.sendBroadcast(intent);
-    }
-
-    public void updateCameraPreview(byte[] preview) {
-        Intent intent = new Intent(action_update_preview);
-        intent.putExtra(BroadcastKeys.CAMERA_PREVIEW, preview);
-        ctx.sendBroadcast(intent);
-    }
-
     public void setOrientationAllowed(boolean status) {
         Intent intent = new Intent(action_orientation_status);
         intent.putExtra(BroadcastKeys.CAMERA_ORIENTATION_ALLOWED, status);
@@ -150,6 +112,7 @@ public class ConfigManager {
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -182,33 +145,7 @@ public class ConfigManager {
                 String msg = intent.getExtras().getString(BroadcastKeys.SERVICE_MSG);
                 eventListener.onServiceStop(msg);
 
-            } else if (action.equals(action_request_config_details)) {
-
-                eventListener.onRequestConfigDetails();
-
-            } else if (action.equals(action_update_config_details)) {
-
-                String name = intent.getExtras().getString(BroadcastKeys.CAMERA_NAME);
-                String url = intent.getExtras().getString(BroadcastKeys.CAMERA_URL);
-                String orientation = intent.getExtras().getString(BroadcastKeys.CAMERA_ORIENTATION);
-                boolean isOrientationChangeAllowed = intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ORIENTATION_ALLOWED);
-                boolean enable = intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ENABLE);
-                ConfigParameters params = new ConfigParameters(name, url);
-                params.orientation = orientation;
-                params.isOrientationChangeAllowed = isOrientationChangeAllowed;
-                params.isDetectionRunning = enable;
-                eventListener.onUpdateConfigDetails(params);
-
-            } else if (action.equals(action_request_preview)) {
-
-                eventListener.onRequestPreview();
-
-            } else if (action.equals(action_update_preview)) {
-
-                byte[] preview = intent.getExtras().getByteArray(BroadcastKeys.CAMERA_PREVIEW);
-                eventListener.onUpdatePreview(preview);
-
-            } else if (action.equals(action_orientation_status)) {
+            }  else if (action.equals(action_orientation_status)) {
 
                 boolean isOrientationAllowed = intent.getExtras().getBoolean(BroadcastKeys.CAMERA_ORIENTATION_ALLOWED);
                 eventListener.onUpdateOrientationAllowed(isOrientationAllowed);
