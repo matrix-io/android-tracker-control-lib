@@ -20,8 +20,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "0.1.0"
+        versionCode 11
+        versionName "0.1.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -58,7 +58,7 @@ ext {
     siteUrl = 'https://github.com/matrix-io/android-tracker-control-lib'
     gitUrl = 'https://github.com/matrix-io/android-tracker-control-lib.git'
 
-    libraryVersion = '0.1.1'
+    libraryVersion = '0.1.2'
 
     developerId = 'hpsaturn'
     developerName = '@hpsaturn'
